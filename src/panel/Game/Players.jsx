@@ -1,80 +1,90 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import TextInput from '../bootstrap-components/TextInput'
 import Btn from '../bootstrap-components/Btn'
 import Checkbox from '../bootstrap-components/Checkbox'
-import { rand } from '../tools'
+import { connect } from 'react-redux'
+import {
+	add,
+	remove,
+	select,
+	selectRandom,
+	toggleSkipCurrent
+} from '../redux/actions/game/players'
 
-export default props => {
-	const [data, setData] = useState({})
+const Players = props => {
 	const [newName, setNewName] = useState('')
 	
-	useEffect(() => {
-		setData(props.data.players)
-	}, [props.data.players])
-	
-	const set = (key, newVal) => props.onChange('players', key, newVal)
-	
 	const add = name => {
-		set('list', [...data.list, name])
+		props.add(name)
 		setNewName('')
-	}
-	const remove = name => set('list', data.list.filter(n => n !== name))
-	
-	const selectRandom = () => {
-		const players = data.list.filter(n => !data.skipCurrent || n !== data.selected)
-		set('selected', players[rand(0, players.length - 1)])
 	}
 	
 	return (
-		<div className="players">
-			<h3>Players</h3>
-			<table className="table table-striped table-hover align-middle players-table">
-				<tbody>
-					{data.list?.map(name => (
-						<tr key={name} className={`${data.selected === name ? 'table-success' : ''}`}>
-							<td>
-								<Btn
-									sm
-									onClick={() => set('selected', name)}
-								>Select</Btn>
-							</td>
-							<td>{name}</td>
-							<td>
-								<Btn
-									danger
-									sm
-									onClick={() => remove(name)}
-								>Remove</Btn>
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
-			<div className="float-start">
-				<Btn
-					disabled={data.list?.length < 2}
-					onClick={() => selectRandom()}
-				>Select random player</Btn>
-				<label className="form-check mt-1">
-					<Checkbox
-						checked={data.skipCurrent}
-						onChange={e => set('skipCurrent', e.target.checked)}
+		<>
+			<div className="players">
+				<h3>Players</h3>
+				<table className="table table-striped table-hover align-middle players-table">
+					<tbody>
+						{props.players.list?.map(name => (
+							<tr key={name} className={`${props.players.selected === name ? 'table-success' : ''}`}>
+								<td>
+									<Btn
+										sm
+										onClick={() => props.select(name)}
+									>Select</Btn>
+								</td>
+								<td>{name}</td>
+								<td>
+									<Btn
+										danger
+										sm
+										onClick={() => props.remove(name)}
+									>Remove</Btn>
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+				<div className="float-start">
+					<Btn
+						disabled={props.players.list?.length < 2}
+						onClick={() => props.selectRandom()}
+					>Select random player</Btn>
+					<label className="form-check mt-1">
+						<Checkbox
+							checked={props.players.skipCurrent}
+							onChange={props.toggleSkipCurrent}
+						/>
+						Skip current player
+					</label>
+				</div>
+				<div className="input-group input-group-username float-end">
+					<TextInput
+						placeholder="username"
+						value={newName}
+						onChange={e => setNewName(e.target.value)}
 					/>
-					Skip current player
-				</label>
+					<Btn
+						outline
+						disabled={!newName || props.players.list?.find(p => p === newName)}
+						onClick={() => add(newName)}
+					>Add</Btn>
+				</div>
 			</div>
-			<div className="input-group input-group-username float-end">
-				<TextInput
-					placeholder="username"
-					value={newName}
-					onChange={e => setNewName(e.target.value)}
-				/>
-				<Btn
-					outline
-					disabled={!newName || data.list?.find(p => p === newName)}
-					onClick={() => add(newName)}
-				>Add</Btn>
-			</div>
-		</div>
+		</>
 	)
 }
+
+const mapsStateToProps = state => ({
+	players: state.game.players
+})
+
+const mapDispatchToProps = {
+	select,
+	remove,
+	selectRandom,
+	toggleSkipCurrent,
+	add,
+}
+
+export default connect(mapsStateToProps, mapDispatchToProps)(Players)

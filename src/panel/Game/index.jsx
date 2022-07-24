@@ -1,48 +1,32 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import Loader from '../bootstrap-components/Loader'
 import Settings from './Settings'
 import Actions from './Actions'
 import Players from './Players'
-import GamesService from '../GamesService'
+import { connect } from 'react-redux'
+import { fetchGameData } from '../redux/actions'
 
-export default ({ login }) => {
-	const [data, setData] = useState({})
-	const [isReady, setIsReady] = useState(false)
-	
-	const gamesService = useMemo(() => new GamesService(login), [])
-	
+const Game = props => {
 	useEffect(() => {
-		gamesService.getList().then(setData)
+		props.fetchGameData()
 	}, [])
-	
-	const change = useCallback((key, subKey, newVal) => {
-		setData(data => {
-			if(data[key][subKey]?.toString() === newVal.toString())
-				return data
-			
-			data[key][subKey] = newVal
-			
-			return {
-				settings: { ...data.settings },
-				actions: { ...data.actions },
-				players: { ...data.players },
-			}
-		})
-	}, [])
-	
-	useEffect(() => {
-		if(isReady)
-			gamesService.update(data)
-		else if(Object.keys(data).length)
-			setIsReady(true)
-		
-	}, [data])
-	
+
 	return (
-		<Loader isReady={isReady}>
-			<Settings data={data} onChange={change} login={login}/>
-			<Actions data={data} onChange={change}/>
-			<Players data={data} onChange={change}/>
+		<Loader isReady={props.showLoader}>
+			<Settings />
+			<Actions />
+			<Players />
 		</Loader>
 	)
 }
+
+const mapsStateToProps = state => ({
+	game: state.game,
+	showLoader: !state.loaders.game,
+})
+
+const mapDispatchToProps = {
+	fetchGameData
+}
+
+export default connect(mapsStateToProps, mapDispatchToProps)(Game)

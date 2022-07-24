@@ -1,8 +1,9 @@
 import React from 'react'
-
+import { connect } from 'react-redux'
 import './Nav.css'
 
-export default ({ OAuthData: { client_id, redirect_uri }, user }) => {
+const Nav = props => {
+	const { OAuthData: { client_id, redirect_uri }, user } = props.auth
 	const twitchOAuthParams = new URLSearchParams({
 		client_id,
 		redirect_uri,
@@ -36,3 +37,9 @@ export default ({ OAuthData: { client_id, redirect_uri }, user }) => {
 		</nav>
 	)
 }
+
+const mapsStateToProps = state => ({
+	auth: state.auth
+})
+
+export default connect(mapsStateToProps)(Nav)

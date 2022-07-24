@@ -1,24 +1,35 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Nav from './Nav'
 import Loader from './bootstrap-components/Loader'
 import Game from './Game'
+import { fetchAuthData } from './redux/actions'
+import { connect } from 'react-redux'
 
-export default () => {
-	const [authData, setAuthData] = useState({})
-	
+const App = props => {
 	useEffect(() => {
-		fetch('/auth')
-			.then(res =>
-				res.json().then(setAuthData)
-			)
+		props.fetchAuthData()
 	}, [])
 	
 	return (
-		<Loader isReady={Object.keys(authData).length}>
-			<Nav {...authData} />
+		<Loader isReady={props.showLoader}>
+			<Nav />
 			<div className="container mt-3">
-				{authData.user?.name ? <Game login={authData.user.login}/> : <h3 className="text-danger">Not logged in</h3>}
+				{props.auth.user?.name
+					? <Game />
+					: <h3 className="text-danger">Not logged in</h3>
+				}
 			</div>
 		</Loader>
 	)
 }
+
+const mapsStateToProps = state => ({
+	auth: state.auth,
+	showLoader: !state.loaders.app,
+})
+
+const mapDispatchToProps = {
+	fetchAuthData
+}
+
+export default connect(mapsStateToProps, mapDispatchToProps)(App)
