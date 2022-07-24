@@ -1,0 +1,32 @@
+.col-form-label-sm {
+	font-size: 1rem;
+	padding-bottom: 0;
+}
+
+.overlay-input {
+	width: 216px;
+}
+.input-group-timer, .input-group-streak, .timer-countdown {
+	width: 120px;
+}
+.input-group-username {
+	width: 173px;
+}
+.timer-start-stop {
+	width: 64px;
+}
+.players {
+	width: 412px;
+}
+.players-table td:first-child {
+	width: 69px;
+}
+.players-table td:last-child {
+	width: 83px;
+}
+
+.spinner-border {
+	width: 100px;
+	height: 100px;
+	margin-left: 100px;
+}

@@ -1,0 +1,63 @@
+@font-face {
+	font-family: Montserrat;
+	src: url(./montserrat-regular-webfont.woff2) format("woff2");
+	font-weight: 400;
+	font-style: normal;
+}
+body {
+	margin: 0
+}
+.green {
+	color: #0f0;
+}
+.yellow {
+	color: #ff0;
+}
+.red {
+	color: #f03a17;
+}
+.gray {
+	color: #aaa;
+}
+
+.container {
+	text-shadow: -1px 1px 3px rgba(0, 0, 0, .2),
+				  1px 1px 3px rgba(0, 0, 0, .2),
+				 1px -1px 3px rgba(0, 0, 0, .2),
+				-1px -1px 3px rgba(0, 0, 0, .2);
+	font-family: Montserrat, sans-serif;
+	font-weight: 700;
+	font-size: 20px;
+	line-height: 1.7;
+	box-shadow: 2px 2px 7px -2px #000;
+	background-color: rgba(0, 0, 0, .4);
+	color: #fff;
+	width: calc(100% - 7px);
+	border-radius: 10px;
+	position: fixed;
+}
+.container > div {
+	margin: 10px;
+}
+.header {
+	display: flex;
+	justify-content: space-between;
+	font-size: 25px;
+}
+
+.players-table-header,
+.players-table-list > div {
+	padding: 0 10px;
+}
+.players-table-header {
+	background-color: rgba(0, 0, 0, .5)
+}
+.players-table-list > div:nth-child(odd) {
+	background-color: rgba(0, 0, 0, .1)
+}
+.players-table-list > div:nth-child(even) {
+	background-color: rgba(0, 0, 0, .2)
+}
+.wildcard {
+	float: right;
+}
