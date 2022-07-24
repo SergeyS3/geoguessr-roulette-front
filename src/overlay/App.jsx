@@ -4,11 +4,17 @@ import WsWatcher from '../common/tools/wsWatcher'
 
 export default () => {
 	const [data, setData] = useState({})
+	const [timerFinish, setTimerFinish] = useState(false)
 	
 	useEffect(() => {
 		const wsWatcher = new WsWatcher(window.location.search.substr(1)).on('data', setData)
 		return () => wsWatcher.destroy()
 	}, [])
+	
+	useEffect(() => {
+		if(data.actions)
+			setTimerFinish(!data.actions.timerMsLeft)
+	}, [data.actions?.timerMsLeft])
 	
 	if(!Object.keys(data).length)
 		return <h2>No game data</h2>
@@ -18,11 +24,15 @@ export default () => {
 			<div>
 				<div className="header">
 					<div>streak: {data.actions.streak}</div>
-					<div className={data.actions.timerPaused ? (data.actions.timerMsLeft ? '' : 'red') : 'yellow'}>
+					<div className={timerFinish ? 'red' : (data.actions.timerPaused ? '' : 'yellow')}>
 						<Timer
 							paused={data.actions.timerPaused}
 							msLeft={data.actions.timerMsLeft}
 							endTime={data.actions.timerEndTime}
+							OnPause={msLeft => {
+								if(!msLeft)
+									setTimerFinish(true)
+							}}
 						/>
 					</div>
 				</div>
